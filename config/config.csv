@@ -1,0 +1,13 @@
+user,vien
+password_mysql, vienlomi
+database,project_v3
+password_redis,
+address_redis,localhost:6379
+DB_Redis,0
+addressMQ,amqp://guest:guest@localhost:5672/
+company_name,My company
+company_mail,binh92dangdung@gmail.com
+subject_mail,thanks for your buying our good
+cnt_consumers,1
+key_token,abc
+key_sendgrid,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

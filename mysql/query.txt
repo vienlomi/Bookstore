@@ -1,0 +1,42 @@
+INSERT INTO products (name, author, collection, image_url, price, sales, publisher, date_public, rate, description, status_product)
+VALUES ("Harry Potter and the Sorcerer's Stone","J. K. Rowling", "Fantasy,Fiction", "https://cdn-amz.fado.vn/images/I/91ocU8970hL.jpg",
+20.99, 0.1, "Arthur A. Levine Books; Slp edition", "2009-01-01", 5, "Harry Potter has never even heard of Hogwarts when the letters start dropping on the doormat at number four, Privet Drive. Addressed in green ink on yellowish parchment with a purple seal, they are swiftly confiscated by his grisly aunt and uncle. Then, on Harry's eleventh birthday, a great beetle-eyed giant of a man called Rubeus Hagrid bursts in with some astonishing news: Harry Potter is a wizard, and he has a place at Hogwarts School of Witchcraft and Wizardry. An incredible adventure is about to begin!
+/nThese editions of the classic and internationally bestselling, multi-award-winning series feature instantly pick-up-able jackets by award-winning illustrator Jonny Duddle, and are the perfect starting point for anyone who's ready to lose themselves in the biggest children's books of all time.", true);
+
+
+
+-------------
+
+SELECT c.order_id, c.user_id, c.total_price, c.shipping_method, c.receiver_address, c.receiver_phone, c.note,
+        c.pay_method, c.shipped_date, c.status, c.created_at, c.product_id, c.amount, c.unit_price,
+        d.product_id, d.name, d.author, d.collection,d.image_url FROM
+(select a.order_id, a.user_id, a.total_price, a.shipping_method, a.receiver_address, a.receiver_phone, a.note,
+ a.pay_method, a.shipped_date, a.status, a.created_at, b.product_id, b.amount, b.unit_price from
+(select * from orders where order_id = 2) as a
+INNER JOIN
+(select * from order_items) as b
+WHERE a.order_id = b.order_id
+) as c
+INNER JOIN
+(select product_id, name, image_url from products) as d
+WHERE c.product_id = d.product_id;
+
+
+
+---------------------
+
+SELECT c.order_id, c.user_id, c.total_price, IFNULL(c.status, ""), c.created_at, c.amount, c.unit_price,
+        d.product_id, d.name, d.image_url, d.price FROM
+(select a.order_id, a.user_id, a.total_price, a.status, a.created_at, b.product_id, b.amount, b.unit_price from
+(select * from orders where user_id = 1) as a
+INNER JOIN
+(select * from order_items) as b
+WHERE a.order_id = b.order_id
+) as c
+INNER JOIN
+(select product_id, name, image_url, price from products) as d
+WHERE c.product_id = d.product_id
+ORDER BY c.created_at DESC;
+
+
+SELECT det_ord.order_id, c.total_price, IFNULL(c.status, ""), c.created_at, c.amount, c.unit_price, d.product_id, d.name, d.image_url, d.price FROM (select ord.order_id, ord.user_id, ord.total_price, ord.status, ord.created_at, ite.product_id, ite.amount, ite.unit_price from (select order_id total_price, status, created_at from orders where user_id = %s) as ord\nINNER JOIN\n(select product_id, amount, unit_price from order_items) as ite\nWHERE ord.order_id = ite.order_id\n) as det_ord\nINNER JOIN\n(select product_id, name, image_url, price from products) as pro WHERE det_ord.product_id = pro.product_id ORDER BY create_at DESC LIMIT 1, 5;
