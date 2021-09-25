@@ -135,7 +135,7 @@ func (u *UserModel) CheckEmail(email string) (bool, error) {
 func (u *UserModel) Login(username string, email string, password string) (User, error) {
 	var user User
 	query := `select user_id, user_name, email, IFNULL(first_name, ""), IFNULL(last_name,""), IFNULL(birthday,""), IFNULL(sex,""), IFNULL(address,""), IFNULL(phone,""), create_at
-		from users where user_name = ? or email = ? and password = ?`
+		from users where password = ? and (user_name = ? or email = ?)`
 	rs, err := u.DB.Query(query, username, email, password)
 	if err != nil {
 		fmt.Println("exec check login fail")

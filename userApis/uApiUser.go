@@ -74,16 +74,17 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		username = ""
 	}
 	user, err := connection.Model.User.Login(username, email, input.Password)
-	if user.UserId == 0 {
-		log.Println(err)
-		http.Error(w, "wrong username or password", http.StatusInternalServerError)
-		return
-	}
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "wrong username or password", http.StatusInternalServerError)
 		return
 	}
+	if user.UserId == 0 {
+		log.Println(err)
+		http.Error(w, "wrong username or password", http.StatusInternalServerError)
+		return
+	}
+
 	var name string
 	if (user.FirstName != "") || (user.LastName != "") {
 		name = user.FirstName + " " + user.LastName
@@ -233,6 +234,7 @@ func ChangePassHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		ok, _ := connection.Model.User.ChangePass(input.Password, email)
+		log.Println(ok)
 		if !ok {
 			http.Error(w, "error change pass", 400)
 			return
