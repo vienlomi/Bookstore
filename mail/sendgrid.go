@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -84,7 +85,8 @@ func (sg *Sendgrid) Send(ec *EmailContent) error {
 	htmlContent := ec.HtmlContent
 	fmt.Println("chuan bi gui mail: ", htmlContent)
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient("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")
+	api_key := os.Getenv("SENDGRID_API_KEY")
+	client := sendgrid.NewSendClient(api_key)
 
 	response, err := client.Send(message)
 	if err != nil {
